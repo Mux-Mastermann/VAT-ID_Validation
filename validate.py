@@ -1,25 +1,30 @@
 import re
 import os
+import tkinter as tk
 
+from tkinter import filedialog
 from zeep import Client
 
-
-# setting up the path for input and output file
-INPUT_PATH = "check/VATids.txt"
-OUTPUT_PATH = "check/results.txt"
 
 print("Setting up WSDL Client")
 # setting up the wsdl
 client = Client(wsdl="http://ec.europa.eu/taxation_customs/vies/"
                 "checkVatService.wsdl")
 
-# getting the dir path of this script
-dir_path = os.path.dirname(__file__)
+# setup tkinter
+root = tk.Tk()
+root.withdraw()
+# get the file path from the user
+input_path = filedialog.askopenfilename(title="Select File for VAT-ID check",
+                                        filetypes=(("text files", "txt"),))
+
+# create output path in the same folder as input_path
+output_path = f"{os.path.split(input_path)[0]}/vatcheck_output.txt"
 
 # creating a results file
-with open(OUTPUT_PATH, "w") as write_file:
+with open(output_path, "w") as write_file:
     # opening the check file (has to be one ID per line)
-    with open(INPUT_PATH, "r") as read_file:
+    with open(input_path, "r") as read_file:
         print("Checking the VAT-IDs...")
         for line in read_file:
             # split id after two characters to seperate country and vatnumber
@@ -36,4 +41,4 @@ with open(OUTPUT_PATH, "w") as write_file:
 
 # open the results file
 print("Check done! Opening results...")
-os.system(f"notepad {dir_path}/OUTPUT_PATH")
+os.system(f"notepad {output_path}")
