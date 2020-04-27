@@ -14,7 +14,10 @@ root = tk.Tk()
 root.withdraw()
 # get the file path from the user
 input_path = filedialog.askopenfilename(title="Select File for VAT-ID check",
-                                        filetypes=(("text files", "txt"),))
+                                        filetypes=[("text files", ".txt")])
+# if file dialog canceled, quit
+if not input_path:
+    quit()
 
 # setting up the wsdl
 print("Setting up WSDL Client")
