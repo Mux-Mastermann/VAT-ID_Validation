@@ -1,32 +1,39 @@
+import re
+import os
+
 from zeep import Client
 
-"""
-Special thanks to this YouTube Tutorial:
-https://www.youtube.com/watch?v=JBYEQjg_znI
 
-most helpful part was the following command:
-$ python -mzeep [wsdl-adress]
-Scroll down to Service: and you find all Operations
-"""
+# setting up the path for input and output file
+INPUT_PATH = "check/VATids.txt"
+OUTPUT_PATH = "check/results.txt"
 
+print("Setting up WSDL Client")
 # setting up the wsdl
 client = Client(wsdl="http://ec.europa.eu/taxation_customs/vies/"
                 "checkVatService.wsdl")
 
-# fill the check list with dicts of country Code and VAT Number
-vat_ids = [{"countryCode": "DE", "vatNumber": "295874949"},
-           {"countryCode": "ATU", "vatNumber": "14662505"}]
-# create the empty response list
-response = []
+# getting the dir path of this script
+dir_path = os.path.dirname(__file__)
 
-# loop through the VAT-IDs
-for id in vat_ids:
-    try:
-        r = client.service.checkVat(id["countryCode"], id["vatNumber"])
-    except Exception as e:
-        r = e
-    finally:
-        # append the responses to the response list
-        response.append(r)
+# creating a results file
+with open(OUTPUT_PATH, "w") as write_file:
+    # opening the check file (has to be one ID per line)
+    with open(INPUT_PATH, "r") as read_file:
+        print("Checking the VAT-IDs...")
+        for line in read_file:
+            # split id after two characters to seperate country and vatnumber
+            id = re.split(r"(\S\S)", line.strip(), 1)
+            try:
+                # check the vat with wsdl
+                r = client.service.checkVat(id[1], id[2])
+            except Exception as e:
+                # if error print the error
+                write_file.write(f"{line.strip()}\t{e}\n")
+            else:
+                # else print the returned valid-status
+                write_file.write(f"{line.strip()}\t{r['valid']}\n")
 
-print(response)
+# open the results file
+print("Check done! Opening results...")
+os.system(f"notepad {dir_path}/OUTPUT_PATH")
