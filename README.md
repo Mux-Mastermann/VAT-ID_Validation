@@ -8,7 +8,7 @@ You can use either a `exe` or the `validate.py`.
 
 #### Windows EXE
 
-This tool was released as an `exe` file for Windows and can be downloaded [here](). You just need to unzip the folder and can run the programm without any installation.
+This tool was released as an `exe` file for Windows and can be found and downloaded in the GitHub [release section](https://github.com/Mux-Mastermann/VAT-ID_Validation/releases). You just need to download the `exe` from the `Assets` and can run the programm without any installation.
 
 #### Python / Command-line
 
