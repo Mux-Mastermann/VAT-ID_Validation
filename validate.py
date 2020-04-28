@@ -6,6 +6,9 @@ from tkinter import filedialog
 from zeep import Client
 
 
+# Indicating for the user that the programm is starting
+print("Starting VAT-ID Validator...")
+
 # defining maximum number of lines in the input file
 MAX_INPUT_LINES = 100
 
@@ -17,6 +20,7 @@ input_path = filedialog.askopenfilename(title="Select File for VAT-ID check",
                                         filetypes=[("text files", ".txt")])
 # if file dialog canceled, quit
 if not input_path:
+    print("No file was chosen. Closing the program.")
     quit()
 
 # setting up the wsdl
@@ -39,6 +43,9 @@ with open(output_path, "w") as write_file:
 
         print("Checking the VAT-IDs...")
         for line in lines:
+            # checking for blank lines
+            if len(line) <= 1:
+                continue
             # split id after two characters to seperate country and vatno
             id = re.split(r"(\S\S)", line.strip(), 1)
             try:
@@ -53,4 +60,4 @@ with open(output_path, "w") as write_file:
 
 # open the results file
 print("Check done! Opening results...")
-os.system(f"notepad {output_path}")
+os.startfile(output_path)
